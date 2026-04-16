@@ -27,6 +27,14 @@ def encode_image_to_base64(image_path):
 st.set_page_config(page_title="🎨 Trazos con Emoción")
 st.title("🎨 Trazos con Emoción")
 
+st.markdown(
+    """
+    Esta aplicación permite dibujar libremente en un tablero interactivo y,
+    mediante inteligencia artificial, analiza los trazos, formas y colores
+    para interpretar la emoción o sensación que transmite la obra.
+    """
+)
+
 with st.sidebar:
     st.subheader("🧠 Acerca de")
     st.write(
