@@ -1,4 +1,3 @@
-import os
 import streamlit as st
 import base64
 from openai import OpenAI
@@ -35,24 +34,22 @@ st.markdown(
     """
 )
 
-with st.sidebar:
-    st.subheader("🧠 Acerca de")
-    st.write(
-        "Dibuja libremente y la inteligencia artificial "
-        "interpretará la emoción transmitida por tus trazos."
-    )
+st.info(
+    "🖌️ Dibuja en el tablero, elige tus colores y deja que la IA "
+    "interprete la emoción de tu creación."
+)
 
-    st.divider()
+# -----------------------------
+# Sidebar con controles
+# -----------------------------
+with st.sidebar:
     st.subheader("🎛️ Propiedades del Tablero")
 
-    # Dimensiones
-    st.subheader("Dimensiones")
-    canvas_width = st.slider("Ancho", 300, 700, 500, 50)
-    canvas_height = st.slider("Alto", 200, 600, 350, 50)
+    canvas_width = st.slider("📏 Ancho", 300, 700, 500, 50)
+    canvas_height = st.slider("📐 Alto", 200, 600, 350, 50)
 
-    # Herramienta
     drawing_mode = st.selectbox(
-        "Herramienta de dibujo",
+        "✏️ Herramienta",
         (
             "freedraw",
             "line",
@@ -64,21 +61,22 @@ with st.sidebar:
         ),
     )
 
-    # Grosor
-    stroke_width = st.slider(
-        "Ancho del trazo", 1, 30, 5
+    stroke_width = st.slider("🖊️ Grosor del pincel", 1, 30, 5)
+
+    # 🎨 Color libre del pincel
+    stroke_color = st.color_picker(
+        "🎨 Elige el color del pincel",
+        "#000000"
     )
 
-    # Colores
-    stroke_color = st.color_picker(
-        "Color de trazo", "#000000"
-    )
+    # 🖼️ Fondo
     bg_color = st.color_picker(
-        "Color de fondo", "#FFFFFF"
+        "🖼️ Elige el color de fondo",
+        "#FFFFFF"
     )
 
 # -----------------------------
-# Canvas con controles
+# Canvas
 # -----------------------------
 canvas_result = st_canvas(
     fill_color="rgba(255, 165, 0, 0.3)",
@@ -118,11 +116,14 @@ if canvas_result.image_data is not None and api_key and analyze_button:
 
             prompt_text = """
             Analiza este dibujo hecho a mano e interpreta la emoción que transmite.
+            Ten en cuenta los trazos, las formas, la composición y especialmente
+            los colores utilizados por el usuario.
+
             Responde en español con:
-            - Emoción principal
-            - Explicación basada en trazos, formas y colores
-            - Sensación que genera
-            - Un título artístico para la obra
+            1. Emoción principal
+            2. Explicación basada en trazos, formas y colores
+            3. Sensación que genera en el espectador
+            4. Un título artístico para la obra
             """
 
             response = client.chat.completions.create(
@@ -149,10 +150,10 @@ if canvas_result.image_data is not None and api_key and analyze_button:
             st.session_state.analysis_done = True
 
         except Exception as e:
-            st.error(f"Ocurrió un error: {e}")
+            st.error(f"❌ Ocurrió un error: {e}")
 
 # -----------------------------
-# Resultado
+# Resultado emocional
 # -----------------------------
 if st.session_state.analysis_done:
     st.divider()
@@ -160,7 +161,7 @@ if st.session_state.analysis_done:
     st.write(st.session_state.emotion_result)
 
 # -----------------------------
-# Aviso
+# Aviso API
 # -----------------------------
 if not api_key:
-    st.info("Ingresa tu API key para activar el análisis.")
+    st.warning("⚠️ Ingresa tu API key para activar el análisis emocional.")
